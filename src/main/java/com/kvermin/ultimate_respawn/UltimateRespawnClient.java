@@ -37,8 +37,6 @@ public class UltimateRespawnClient {
     @SubscribeEvent
     static void onClientSetup(FMLClientSetupEvent event) {
         // Some client setup code
-        UltimateRespawn.LOGGER.info("HELLO FROM CLIENT SETUP");
-        UltimateRespawn.LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
     }
 
     @SubscribeEvent
