@@ -1,0 +1,18 @@
+{
+  "parent": "minecraft:item/handheld",
+  "loader": "neoforge:separate_transforms",
+  "textures": {
+    "layer0": "ultimate_respawn:item/orichalcum_greatsword_gui"
+  },
+  "base": {
+    "parent": "ultimate_respawn:item/orichalcum_greatsword_hand"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "ultimate_respawn:item/orichalcum_greatsword_gui"
+    },
+    "fixed": {
+      "parent": "ultimate_respawn:item/orichalcum_greatsword_gui"
+    }
+  }
+}

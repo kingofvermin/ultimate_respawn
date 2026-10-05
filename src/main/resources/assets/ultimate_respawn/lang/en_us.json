@@ -1,0 +1,13 @@
+{
+  "entity.ultimate_respawn.beetle": "Beetle",
+  "entity.ultimate_respawn.borehole_ant": "Borehole Ant",
+  "entity.ultimate_respawn.orchauroch": "Orchauroch",
+
+  "item.ultimate_respawn.orichalcum_scrap": "Orichalcum Scrap",
+  "item.ultimate_respawn.orichalcum_ingot": "Orichalcum Ingot",
+  "item.ultimate_respawn.orichalcum_greatsword": "Orichalcum Greatsword",
+
+  "item.ultimate_respawn.beetle_spawn_egg": "Beetle Spawn Egg",
+  "item.ultimate_respawn.borehole_ant_spawn_egg": "Borehole Ant Spawn Egg",
+  "item.ultimate_respawn.orchauroch_spawn_egg": "Orchauroch Spawn Egg"
+}

@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "orichalcum_ingot",
+  "ingredients": [
+    {
+      "item": "ultimate_respawn:orichalcum_scrap"
+    },
+    {
+      "item": "ultimate_respawn:orichalcum_scrap"
+    },
+    {
+      "item": "ultimate_respawn:orichalcum_scrap"
+    },
+    {
+      "item": "ultimate_respawn:orichalcum_scrap"
+    },
+    {
+      "item": "minecraft:copper_ingot"
+    },
+    {
+      "item": "minecraft:copper_ingot"
+    },
+    {
+      "item": "minecraft:copper_ingot"
+    },
+    {
+      "item": "minecraft:copper_ingot"
+    }
+  ],
+  "result": {
+    "item": "ultimate_respawn:orichalcum_ingot"
+  }
+}
