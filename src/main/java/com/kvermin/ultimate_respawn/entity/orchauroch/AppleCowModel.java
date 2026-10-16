@@ -106,7 +106,7 @@ public class AppleCowModel<T extends Entity> extends EntityModel<AppleCowRenderS
         this.shakeAnimation.apply(state.shakeAnimationState, ageInTicks);
 
         this.tree.zRot = this.body.zRot;
-        this.tree.x = (float) 17.5F * Mth.sin(body.zRot);
-        this.tree.y = (float) 5.5 - 17.5F * Mth.cos(body.zRot);
+        this.tree.x = 17.5F * Mth.sin(body.zRot);
+        this.tree.y = 5.5F - 17.5F * Mth.cos(body.zRot);
     }
 }

@@ -20,7 +20,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Items;
 
 public class BoreholeWorkerModel<T extends Entity> extends EntityModel<BoreholeWorkerRenderState> {
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(UltimateRespawn.MODID, "boreholeworker"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(UltimateRespawn.MODID, "borehole_worker"), "main");
 	private final ModelPart head;
 	private final ModelPart left_mandible;
 	private final ModelPart right_mandible;

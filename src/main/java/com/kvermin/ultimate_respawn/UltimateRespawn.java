@@ -3,7 +3,11 @@ package com.kvermin.ultimate_respawn;
 import com.kvermin.ultimate_respawn.entity.URMobs;
 import com.kvermin.ultimate_respawn.item.URItems;
 
+import com.kvermin.ultimate_respawn.particle.URParticleTypes;
+import com.kvermin.ultimate_respawn.sound.URSounds;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
@@ -30,6 +34,9 @@ public class UltimateRespawn {
         // Register the Deferred Register to the mod event bus so items get registered
         URItems.ITEMS.register(modEventBus);
 
+        URSounds.SOUND_EVENTS.register(modEventBus);
+        URParticleTypes.PARTICLE_TYPES.register(modEventBus);
+
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (UltimateRespawn) to respond directly to events.
         // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
@@ -46,9 +53,37 @@ public class UltimateRespawn {
 
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
-            event.accept(URItems.ORICHALCUM_SCRAP);
-            event.accept(URItems.ORICHALCUM_INGOT);
+        CreativeModeTab.TabVisibility tabVisibility = CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS;
+        if (event.getTabKey() == CreativeModeTabs.COMBAT) {
+            event.insertAfter(Items.NETHERITE_SWORD.getDefaultInstance(),
+                    URItems.ORICHALCUM_GREATSWORD.get().getDefaultInstance(),
+                    tabVisibility);
+        } else if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+            event.insertAfter(Items.NETHERITE_INGOT.getDefaultInstance(),
+                    URItems.ORICHALCUM_SCRAP.get().getDefaultInstance(),
+                    tabVisibility);
+            event.insertAfter(URItems.ORICHALCUM_SCRAP.get().getDefaultInstance(),
+                    URItems.ORICHALCUM_INGOT.get().getDefaultInstance(),
+                    tabVisibility);
+            event.insertAfter(Items.SLIME_BALL.getDefaultInstance(),
+                    URItems.CRUOR_BALL.get().getDefaultInstance(),
+                    tabVisibility);
+        } else if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
+            event.insertAfter(Items.MOOSHROOM_SPAWN_EGG.getDefaultInstance(),
+                    URItems.ORCHAUROCH_SPAWN_EGG.get().getDefaultInstance(),
+                    tabVisibility);
+            event.insertBefore(Items.DROWNED_SPAWN_EGG.getDefaultInstance(),
+                    URItems.CHTHONIAN_KNIGHT_SPAWN_EGG.get().getDefaultInstance(),
+                    tabVisibility);
+            event.insertBefore(Items.CAVE_SPIDER_SPAWN_EGG.getDefaultInstance(),
+                    URItems.BEETLE_SPAWN_EGG.get().getDefaultInstance(),
+                    tabVisibility);
+            event.insertAfter(URItems.BEETLE_SPAWN_EGG.get().getDefaultInstance(),
+                    URItems.BOREHOLE_ANT_SPAWN_EGG.get().getDefaultInstance(),
+                    tabVisibility);
+            event.insertAfter(Items.SLIME_SPAWN_EGG.getDefaultInstance(),
+                    URItems.WORMS_SPAWN_EGG.get().getDefaultInstance(),
+                    tabVisibility);
         }
     }
 

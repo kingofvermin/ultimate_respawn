@@ -154,8 +154,6 @@ public class BeetleModel<T extends Entity> extends EntityModel<BeetleRenderState
 			this.right_leg_middle.zRot += Math.sin(ageInTicks * 0.5F + 4) * 0.35F;
 			this.right_leg_back.zRot += Math.sin(ageInTicks * 0.5F + 5) * 0.35F;
 		} else if (state.isFlying) {
-			this.walkAnimation.applyWalk(state.walkAnimationPos, state.walkAnimationSpeed * 2F, 2F, 1F);
-		} else {
 			this.root.xRot += Math.sin(ageInTicks * 0.125F) * 0.1F;
 			this.root.zRot += Math.sin(ageInTicks * 0.125F) * 0.1F;
 
@@ -165,6 +163,8 @@ public class BeetleModel<T extends Entity> extends EntityModel<BeetleRenderState
 			this.right_leg_front.xRot += Math.sin(ageInTicks * 0.125F + 3) * 0.2F + 0.2F;
 			this.right_leg_middle.xRot += Math.sin(ageInTicks * 0.125F + 4) * 0.2F + 0.2F;
 			this.right_leg_back.xRot += Math.sin(ageInTicks * 0.125F + 5) * 0.2F + 0.2F;
+		} else {
+			this.walkAnimation.applyWalk(state.walkAnimationPos, state.walkAnimationSpeed * 2F, 2F, 1F);
 		}
 	}
 }

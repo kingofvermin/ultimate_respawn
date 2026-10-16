@@ -16,7 +16,8 @@ public class BeetleRenderer extends MobRenderer<Beetle, BeetleRenderState, Beetl
         return new BeetleRenderState();
     }
 
-    public static void extractAdditionalState(Beetle entity, BeetleRenderState state, float partialTicks) {
+    public void extractRenderState(Beetle entity, BeetleRenderState state, float partialTicks) {
+        super.extractRenderState(entity, state, partialTicks);
         state.isProne = entity.getEntityData().get(Beetle.PRONE);
         state.isFlying = entity.isFlying();
         state.attackAnimationState.copyFrom(entity.attackAnimationState);

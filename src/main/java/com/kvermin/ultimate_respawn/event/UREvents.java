@@ -4,7 +4,9 @@ import com.kvermin.ultimate_respawn.UltimateRespawn;
 import com.kvermin.ultimate_respawn.entity.URMobs;
 import com.kvermin.ultimate_respawn.entity.beetle.Beetle;
 import com.kvermin.ultimate_respawn.entity.borehole_ant.BoreholeWorker;
+import com.kvermin.ultimate_respawn.entity.chthonian_knight.ChthonianKnight;
 import com.kvermin.ultimate_respawn.entity.orchauroch.AppleCow;
+import com.kvermin.ultimate_respawn.entity.worms.Worms;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
@@ -16,6 +18,8 @@ public class UREvents {
     public static void entityAttributes(EntityAttributeCreationEvent event) {
         event.put(URMobs.BEETLE.get(), Beetle.createAttributes().build());
         event.put(URMobs.BOREHOLE_ANT.get(), BoreholeWorker.createAttributes().build());
+        event.put(URMobs.CHTHONIAN_KNIGHT.get(), ChthonianKnight.createAttributes().build());
         event.put(URMobs.ORCHAUROCH.get(), AppleCow.createAttributes().build());
+        event.put(URMobs.WORMS.get(), Worms.createAttributes().build());
     }
 }

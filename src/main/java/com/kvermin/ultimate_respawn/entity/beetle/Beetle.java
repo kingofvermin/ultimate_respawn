@@ -1,10 +1,9 @@
 package com.kvermin.ultimate_respawn.entity.beetle;
 
-import com.kvermin.ultimate_respawn.entity.FlyableMob;
+import com.kvermin.ultimate_respawn.entity.util.FlyableMob;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -28,7 +27,12 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.logging.Logger;
+
+import static com.kvermin.ultimate_respawn.entity.util.URMobUtilities.getBlockBelow;
+
 public class Beetle extends FlyableMob {
+    private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(Beetle.class);
     private int exhaustion;
     private int attackCooldown;
     private boolean slamAttack;
@@ -36,9 +40,16 @@ public class Beetle extends FlyableMob {
     public final AnimationState takeoffAnimationState = new AnimationState();
     public final AnimationState flyAnimationState = new AnimationState();
     public final AnimationState landAnimationState = new AnimationState();
-    public static final EntityDataAccessor<Integer> ANIMATION_TICKS = SynchedEntityData.defineId(Beetle.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> ANIMATION_START = SynchedEntityData.defineId(Beetle.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> ANIMATION_LENGTH = SynchedEntityData.defineId(Beetle.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Integer> ANIMATION_ID = SynchedEntityData.defineId(Beetle.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Boolean> PRONE = SynchedEntityData.defineId(Beetle.class, EntityDataSerializers.BOOLEAN);
+
+    public static final int ATTACK_ANIMATION_ID = 1;
+    public static final int TAKEOFF_ANIMATION_ID = 2;
+    public static final int FLY_ANIMATION_ID = 3;
+    public static final int LAND_ANIMATION_ID = 4;
+
 
     public Beetle(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -52,7 +63,6 @@ public class Beetle extends FlyableMob {
 
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(4, new ClampHeightGoal(this));
         this.goalSelector.addGoal(5, new RandomStrollOrFlyingGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
@@ -75,7 +85,7 @@ public class Beetle extends FlyableMob {
         }
         public void start() {
             this.mob.setFlying(true);
-            this.mob.level().broadcastEntityEvent(this.mob, (byte) 8);
+            this.mob.setAnimationState(Beetle.TAKEOFF_ANIMATION_ID);
             this.mob.setExhaustion(0);
         }
     }
@@ -94,8 +104,8 @@ public class Beetle extends FlyableMob {
         }
 
         public void spawnSlamEffects() {
-            this.mob.playSound(SoundEvents.ANVIL_LAND);
-            ((ServerLevel) this.mob.level()).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, this.mob.level().getBlockState(FlyableMob.getBlockBelow(this.mob))), this.mob.getX() - 0.5, this.mob.getY(), this.mob.getZ() - 0.5, 200, 2, 0, 2, 1);
+            this.mob.playSound(SoundEvents.MACE_SMASH_GROUND);
+            ((ServerLevel) this.mob.level()).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, this.mob.level().getBlockState(getBlockBelow(this.mob))), this.mob.getX() - 0.5, this.mob.getY(), this.mob.getZ() - 0.5, 200, 2, 0, 2, 1);
             this.mob.setSlamAttack(false);
             this.mob.setAttackCooldown(80);
         }
@@ -114,14 +124,13 @@ public class Beetle extends FlyableMob {
                 if ((this.mob.distanceToSqr(target.position().add(0,hoverHeight,0)) < 6) && (target.getY() + hoverHeight - this.mob.getY() < 0.5)) {
                     this.mob.getNavigation().stop();
                     this.mob.setFlying(false);
-                    this.mob.level().broadcastEntityEvent(this.mob, (byte) 56);
+                    this.mob.setAnimationState(Beetle.LAND_ANIMATION_ID);
                     this.mob.setSlamAttack(true);
                 }
             } else {
                 if (this.mob.distanceToSqr(target) < 5) {
                     if (target.isBlocking()) {
                         this.mob.entityData.set(PRONE, true);
-                        this.mob.level().broadcastEntityEvent(this.mob, (byte) 39);
                     } else {
                         this.mob.doHurtTarget(target);
                     }
@@ -156,7 +165,7 @@ public class Beetle extends FlyableMob {
             if (this.mob.getY() - getBlockBelow(this.mob).getY() < 2) {
                 this.mob.getNavigation().stop();
                 this.mob.setFlying(false);
-                this.mob.level().broadcastEntityEvent(this.mob, (byte) 56);
+                this.mob.setAnimationState(LAND_ANIMATION_ID);
             } else if (this.mob.getNavigation().isDone()) {
                 BlockPos destination = getBlockBelow(this.mob);
                 this.mob.getNavigation().moveTo(destination.getX(), destination.getY(), destination.getZ(), 1);
@@ -167,10 +176,6 @@ public class Beetle extends FlyableMob {
     @Override
     public void tick() {
         super.tick();
-        this.entityData.set(ANIMATION_TICKS, Math.max(this.entityData.get(ANIMATION_TICKS) - 1, 0));
-        if (this.entityData.get(ANIMATION_TICKS) == 0) {
-            this.entityData.set(ANIMATION_ID, -1);
-        }
 
         this.attackCooldown -= this.attackCooldown > 0 ? 1 : 0;
 
@@ -191,27 +196,27 @@ public class Beetle extends FlyableMob {
     }
 
     private void setupAnimationStates() {
-        if (this.isFlying() && this.entityData.get(ANIMATION_TICKS) == 0) {
+        if (this.isFlying() && this.tickCount - this.entityData.get(ANIMATION_START) >= this.entityData.get(ANIMATION_LENGTH)) {
             this.attackAnimationState.stop();
             this.takeoffAnimationState.stop();
             this.landAnimationState.stop();
             this.flyAnimationState.startIfStopped(this.tickCount);
-        } else if (this.entityData.get(ANIMATION_TICKS) > 0) {
+        } else if (this.tickCount - this.entityData.get(ANIMATION_START) < this.entityData.get(ANIMATION_LENGTH)) {
             switch (this.entityData.get(ANIMATION_ID)) {
-                case 0:
+                case ATTACK_ANIMATION_ID:
                     this.attackAnimationState.stop();
                     this.takeoffAnimationState.stop();
                     this.flyAnimationState.stop();
                     this.landAnimationState.stop();
                     this.attackAnimationState.startIfStopped(this.tickCount);
                     break;
-                case 1:
+                case TAKEOFF_ANIMATION_ID:
                     this.attackAnimationState.stop();
                     this.flyAnimationState.stop();
                     this.landAnimationState.stop();
                     this.takeoffAnimationState.startIfStopped(this.tickCount);
                     break;
-                case 2:
+                case LAND_ANIMATION_ID:
                     this.attackAnimationState.stop();
                     this.takeoffAnimationState.stop();
                     this.flyAnimationState.stop();
@@ -226,10 +231,27 @@ public class Beetle extends FlyableMob {
         }
     }
 
+    private void setAnimationState(int id) {
+        this.entityData.set(ANIMATION_START, this.tickCount);
+        if (id == ATTACK_ANIMATION_ID) {
+            this.entityData.set(ANIMATION_LENGTH, 10);
+            this.entityData.set(ANIMATION_ID, ATTACK_ANIMATION_ID);
+        } else if (id == TAKEOFF_ANIMATION_ID) {
+            this.entityData.set(ANIMATION_LENGTH, 10);
+            this.entityData.set(ANIMATION_ID, TAKEOFF_ANIMATION_ID);
+        } else if (id == FLY_ANIMATION_ID) {
+            this.entityData.set(ANIMATION_LENGTH, 3);
+            this.entityData.set(ANIMATION_ID, FLY_ANIMATION_ID);
+        } else if (id == LAND_ANIMATION_ID) {
+            this.entityData.set(ANIMATION_LENGTH, 10);
+            this.entityData.set(ANIMATION_ID, LAND_ANIMATION_ID);
+        }
+    }
+
     public boolean doHurtTarget(Entity pEntity) {
         if (this.attackCooldown == 0 && pEntity instanceof LivingEntity && !this.isFlying()) {
             this.attackCooldown = 20;
-            this.level().broadcastEntityEvent(this, (byte) 4);
+            Logger.getAnonymousLogger().info(this.entityData.get(ANIMATION_LENGTH).toString());
             return hurtAndThrowTarget((ServerLevel) this.level(), this, (LivingEntity) pEntity);
         }
         return false;
@@ -280,33 +302,11 @@ public class Beetle extends FlyableMob {
     }
 
     @Override
-    public void handleEntityEvent(byte id) {
-        switch (id) {
-            case (byte) 4: // Attack animation
-                this.entityData.set(ANIMATION_TICKS, 10);
-                this.entityData.set(ANIMATION_ID, 0);
-                break;
-            case (byte) 8: // Takeoff animation
-                this.entityData.set(ANIMATION_TICKS, 10);
-                this.entityData.set(ANIMATION_ID, 1);
-                break;
-            case (byte) 39: // Falling prone
-                this.entityData.set(PRONE, true);
-                break;
-            case (byte) 56: // Landing animation
-                this.entityData.set(ANIMATION_TICKS, 10);
-                this.entityData.set(ANIMATION_ID, 2);
-                break;
-            default:
-                super.handleEntityEvent(id);
-        }
-    }
-
-    @Override
     protected void defineSynchedData(SynchedEntityData.Builder entityData) {
         super.defineSynchedData(entityData);
-        entityData.define(ANIMATION_TICKS, 0);
-        entityData.define(ANIMATION_ID, -1);
+        entityData.define(ANIMATION_START, this.tickCount);
+        entityData.define(ANIMATION_LENGTH, 0);
+        entityData.define(ANIMATION_ID, 0);
         entityData.define(PRONE, false);
     }
     @Override

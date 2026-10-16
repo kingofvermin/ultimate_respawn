@@ -1,0 +1,8 @@
+{
+  "worms_burst": {
+    "sounds": [
+      "ultimate_respawn:mob/worms/worms_burst"
+    ],
+    "subtitle": "subtitles.entity.worms.death"
+  }
+}

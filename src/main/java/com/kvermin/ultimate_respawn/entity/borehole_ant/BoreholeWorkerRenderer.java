@@ -18,7 +18,8 @@ public class BoreholeWorkerRenderer extends MobRenderer<BoreholeWorker, Borehole
     private static final Identifier TEXTURE_LOCATION = Identifier.fromNamespaceAndPath(UltimateRespawn.MODID, "textures/entity/borehole_ant/worker.png");
 
     public BoreholeWorkerRenderer(EntityRendererProvider.Context pContext) {
-        super(pContext, new BoreholeWorkerModel<BoreholeWorker>(pContext.bakeLayer(BoreholeWorkerModel.LAYER_LOCATION), BoreholeWorkerAnimation.BOREHOLE_ANT_WALK, BoreholeWorkerAnimation.BOREHOLE_ANT_CHITTER), 1.5f);
+        super(pContext, new BoreholeWorkerModel<BoreholeWorker>(pContext.bakeLayer(BoreholeWorkerModel.LAYER_LOCATION), BoreholeWorkerAnimation.BOREHOLE_ANT_WALK, BoreholeWorkerAnimation.BOREHOLE_ANT_CHITTER), 1f);
+        this.addLayer(new CarriedItemLayer(this));
         this.shadowRadius = 1F;
     }
 
@@ -27,7 +28,8 @@ public class BoreholeWorkerRenderer extends MobRenderer<BoreholeWorker, Borehole
         return new BoreholeWorkerRenderState();
     }
 
-    public static void extractAdditionalState(BoreholeWorker entity, BoreholeWorkerRenderState state, float partialTicks) {
+    public void extractRenderState(BoreholeWorker entity, BoreholeWorkerRenderState state, float partialTicks) {
+        super.extractRenderState(entity, state, partialTicks);
         state.holdingItem = entity.getMainHandItem();
         state.holdingValidItem = entity.holdingValidItem();
         state.idleAnimationState.copyFrom(entity.idleAnimationState);
@@ -51,7 +53,7 @@ public class BoreholeWorkerRenderer extends MobRenderer<BoreholeWorker, Borehole
             }
 
             if (texture != null) {
-                renderColoredCutoutModel(this.getParentModel(), texture, poseStack, submitNodeCollector, lightCoords, state, 1, 1);
+                renderColoredCutoutModel(this.getParentModel(), texture, poseStack, submitNodeCollector, lightCoords, state, -1, 1);
             }
         }
     }

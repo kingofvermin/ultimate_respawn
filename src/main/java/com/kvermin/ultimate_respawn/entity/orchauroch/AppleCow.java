@@ -1,5 +1,7 @@
 package com.kvermin.ultimate_respawn.entity.orchauroch;
 
+import com.kvermin.ultimate_respawn.entity.beetle.Beetle;
+import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -30,8 +32,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class AppleCow extends Cow {
     public final AnimationState shakeAnimationState = new AnimationState();
-    public static final EntityDataAccessor<Integer> ANIMATION_TICKS = SynchedEntityData.defineId(AppleCow.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Integer> GROWTH_STAGE = SynchedEntityData.defineId(AppleCow.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> ANIMATION_START = SynchedEntityData.defineId(AppleCow.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> ANIMATION_LENGTH = SynchedEntityData.defineId(AppleCow.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> ANIMATION_ID = SynchedEntityData.defineId(AppleCow.class, EntityDataSerializers.INT);
+
+    public static final int SHAKE_ANIMATION_ID = 1;
 
     public AppleCow(EntityType<? extends Cow> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -44,7 +50,6 @@ public class AppleCow extends Cow {
     @Override
     public void tick() {
         super.tick();
-        this.entityData.set(ANIMATION_TICKS, Math.max(this.entityData.get(ANIMATION_TICKS) - 1, 0));
 
         if (this.level().isClientSide()) {
             setupAnimationStates();
@@ -54,7 +59,8 @@ public class AppleCow extends Cow {
                     this.setGrowthStage(this.getGrowthStage() + 1);
                 } else if (this.getGrowthStage() == 3) {
                     this.level().playSound((Player)null, this, SoundEvents.AZALEA_LEAVES_BREAK, SoundSource.NEUTRAL, 1.0F, 1.0F);
-                    this.level().broadcastEntityEvent(this, (byte) 8);
+                    ((ServerLevel) this.level()).sendParticles(ColorParticleOption.create(ParticleTypes.TINTED_LEAVES, -9399763), this.getX(), this.getY() + 2.75, this.getZ(), 5, 0.25, 0.25, 0.25, 1);
+                    this.setAnimationState(SHAKE_ANIMATION_ID);
                     this.dropApples(ItemStack.EMPTY);
                 }
             }
@@ -108,21 +114,22 @@ public class AppleCow extends Cow {
     public void setGrowthStage(int value) { this.entityData.set(GROWTH_STAGE, value); }
 
     private void setupAnimationStates() {
-        if (this.entityData.get(ANIMATION_TICKS) > 0) {
-            this.shakeAnimationState.startIfStopped(this.tickCount);
+        if (this.tickCount - this.entityData.get(ANIMATION_START) < this.entityData.get(ANIMATION_LENGTH)) {
+            switch (this.entityData.get(ANIMATION_ID)) {
+                case SHAKE_ANIMATION_ID:
+                    this.shakeAnimationState.startIfStopped(this.tickCount);
+                    break;
+            }
         } else {
-            this.shakeAnimationState.stop();
-        }
+                this.shakeAnimationState.stop();
+            }
     }
 
-    @Override
-    public void handleEntityEvent(byte id) {
-        switch (id) {
-            case (byte) 8: // Shake animation
-                this.entityData.set(ANIMATION_TICKS, 30);
-                break;
-            default:
-                super.handleEntityEvent(id);
+    private void setAnimationState(int id) {
+        this.entityData.set(ANIMATION_START, this.tickCount);
+        if (id == SHAKE_ANIMATION_ID) {
+            this.entityData.set(ANIMATION_LENGTH, 30);
+            this.entityData.set(ANIMATION_ID, SHAKE_ANIMATION_ID);
         }
     }
 
@@ -135,7 +142,9 @@ public class AppleCow extends Cow {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder entityData) {
         super.defineSynchedData(entityData);
-        entityData.define(ANIMATION_TICKS, 0);
+        entityData.define(ANIMATION_START, this.tickCount);
+        entityData.define(ANIMATION_LENGTH, 0);
+        entityData.define(ANIMATION_ID, 0);
         entityData.define(GROWTH_STAGE, 0);
     }
     @Override
