@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.Identifier;
 
 public class BeetleRenderer extends MobRenderer<Beetle, BeetleRenderState, BeetleModel<Beetle>> {
-    private static final Identifier TEXTURE_LOCATION = Identifier.fromNamespaceAndPath(UltimateRespawn.MODID, "textures/entity/beetle/druid_blue.png");
+    private static final Identifier TEXTURE_LOCATION = Identifier.fromNamespaceAndPath(UltimateRespawn.MOD_ID, "textures/entity/beetle/druid_blue.png");
 
     public BeetleRenderer(EntityRendererProvider.Context context) {
         super(context, new BeetleModel<Beetle>(context.bakeLayer(BeetleModel.LAYER_LOCATION), BeetleAnimation.BEETLE_WALK, BeetleAnimation.BEETLE_ATTACK, BeetleAnimation.BEETLE_TAKE_OFF, BeetleAnimation.BEETLE_FLY, BeetleAnimation.BEETLE_LAND), 1.5f);

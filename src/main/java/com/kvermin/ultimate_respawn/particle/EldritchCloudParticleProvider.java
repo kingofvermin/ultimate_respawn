@@ -8,16 +8,16 @@ import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.RandomSource;
 import org.jspecify.annotations.Nullable;
 
-public class URParticleProvider implements ParticleProvider<SimpleParticleType> {
+public class EldritchCloudParticleProvider implements ParticleProvider<SimpleParticleType> {
 
     private final SpriteSet spriteSet;
 
-    public URParticleProvider(SpriteSet spriteSet) {
+    public EldritchCloudParticleProvider(SpriteSet spriteSet) {
         this.spriteSet = spriteSet;
     }
 
     @Override
     public @Nullable Particle createParticle(SimpleParticleType particleType, ClientLevel level, double x, double y, double z, double xd, double yd, double zd, RandomSource random) {
-        return new WormsParticle(level, x, y, z, this.spriteSet, random);
+        return new EldritchCloudParticle(level, x, y, z, this.spriteSet);
     }
 }

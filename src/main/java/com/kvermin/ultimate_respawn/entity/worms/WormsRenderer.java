@@ -9,8 +9,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 public class WormsRenderer extends MobRenderer<Worms, WormsRenderState, WormsModel<Worms>> {
-    private static final Identifier TEXTURE_LOCATION = Identifier.fromNamespaceAndPath(UltimateRespawn.MODID, "textures/entity/worms/worms.png");
-    private static final Identifier ANIMATED_TEXTURE_LOCATION = Identifier.fromNamespaceAndPath(UltimateRespawn.MODID, "textures/entity/worms/worms_alt.png");
+    private static final Identifier TEXTURE_LOCATION = Identifier.fromNamespaceAndPath(UltimateRespawn.MOD_ID, "textures/entity/worms/worms.png");
+    private static final Identifier ANIMATED_TEXTURE_LOCATION = Identifier.fromNamespaceAndPath(UltimateRespawn.MOD_ID, "textures/entity/worms/worms_alt.png");
 
     public WormsRenderer(EntityRendererProvider.Context context) {
         super(context, new WormsModel<Worms>(context.bakeLayer(WormsModel.LAYER_LOCATION)), 0.75f);

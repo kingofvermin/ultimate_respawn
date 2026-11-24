@@ -1,0 +1,20 @@
+{
+  "temperature": 0,
+  "downfall": 0,
+  "has_precipitation": false,
+  "effects": {
+    "sky_color": 4171413,
+    "fog_color": 4171413,
+    "water_color": 5072201,
+    "water_fog_color": 5072201,
+    "grass_color": 5222204,
+    "foliage_color": 5222204,
+    "grass_color_modifier": "none"
+  },
+  "spawners": {},
+  "spawn_costs": {},
+  "carvers": {},
+  "features": [
+    "ultimate_respawn:arch_tree"
+  ]
+}

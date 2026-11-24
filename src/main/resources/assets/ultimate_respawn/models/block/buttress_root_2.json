@@ -1,0 +1,6 @@
+{
+	"parent": "ultimate_respawn:block/buttress_root_base",
+	"textures": {
+		"0": "ultimate_respawn:block/buttress_root_2"
+	}
+}

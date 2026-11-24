@@ -4,8 +4,6 @@
 package com.kvermin.ultimate_respawn.entity.beetle;
 
 import com.kvermin.ultimate_respawn.UltimateRespawn;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.KeyframeAnimation;
 import net.minecraft.client.model.EntityModel;
@@ -18,7 +16,7 @@ import net.minecraft.world.entity.Entity;
 
 public class BeetleModel<T extends Entity> extends EntityModel<BeetleRenderState> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(UltimateRespawn.MODID, "beetle"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(UltimateRespawn.MOD_ID, "beetle"), "main");
 	private final ModelPart abdomen;
 	private final ModelPart head;
 	private final ModelPart left_antenna;

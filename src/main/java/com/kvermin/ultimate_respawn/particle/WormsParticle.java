@@ -10,14 +10,12 @@ import java.util.logging.Logger;
 public class WormsParticle extends FallingParticle {
     SpriteSet spriteSet;
     int randomOffset;
-    float pauseRoll;
 
     public WormsParticle(ClientLevel level, double x, double y, double z, SpriteSet spriteSet, RandomSource random) {
         this.spriteSet = spriteSet;
         super(level, x, y, z, spriteSet.get(random), 16F, 10.0F, false, false, 6.4F, 0F);
         this.randomOffset = random.nextInt(8);
         this.setSprite(spriteSet.get(randomOffset, 8));
-        this.pauseRoll = -1;
         this.xd = random.nextFloat()*0.25 - 0.125;
         this.yd = random.nextFloat()*0.25 + 0.125;
         this.zd = random.nextFloat()*0.25 - 0.125;

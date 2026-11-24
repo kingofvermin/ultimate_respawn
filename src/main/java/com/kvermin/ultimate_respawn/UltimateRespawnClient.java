@@ -11,7 +11,9 @@ import com.kvermin.ultimate_respawn.entity.orchauroch.AppleCowModel;
 import com.kvermin.ultimate_respawn.entity.orchauroch.AppleCowRenderer;
 import com.kvermin.ultimate_respawn.entity.worms.WormsModel;
 import com.kvermin.ultimate_respawn.entity.worms.WormsRenderer;
-import com.kvermin.ultimate_respawn.particle.URParticleProvider;
+import com.kvermin.ultimate_respawn.particle.EldritchCloudParticleProvider;
+import com.kvermin.ultimate_respawn.particle.EldritchTendrilParticleProvider;
+import com.kvermin.ultimate_respawn.particle.WormsParticleProvider;
 import com.kvermin.ultimate_respawn.particle.URParticleTypes;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -25,9 +27,9 @@ import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
 // This class will not load on dedicated servers. Accessing client side code from here is safe.
-@Mod(value = UltimateRespawn.MODID, dist = Dist.CLIENT)
+@Mod(value = UltimateRespawn.MOD_ID, dist = Dist.CLIENT)
 // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
-@EventBusSubscriber(modid = UltimateRespawn.MODID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = UltimateRespawn.MOD_ID, value = Dist.CLIENT)
 public class UltimateRespawnClient {
     public UltimateRespawnClient(ModContainer container) {
         // Allows NeoForge to create a config screen for this mod's configs.
@@ -38,7 +40,6 @@ public class UltimateRespawnClient {
 
     @SubscribeEvent
     static void onClientSetup(FMLClientSetupEvent event) {
-        // Some client setup code
     }
 
     @SubscribeEvent
@@ -59,6 +60,8 @@ public class UltimateRespawnClient {
     }
     @SubscribeEvent
     public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
-        event.registerSpriteSet(URParticleTypes.WORMS.get(), URParticleProvider::new);
+        event.registerSpriteSet(URParticleTypes.ELDRITCH_CLOUD.get(), EldritchCloudParticleProvider::new);
+        event.registerSpriteSet(URParticleTypes.ELDRITCH_TENDRIL.get(), EldritchTendrilParticleProvider::new);
+        event.registerSpriteSet(URParticleTypes.WORMS.get(), WormsParticleProvider::new);
     }
 }

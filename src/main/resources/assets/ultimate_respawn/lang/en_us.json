@@ -1,18 +1,56 @@
 {
+  "block.ultimate_respawn.arch_tree_log": "Arch-Tree Log",
+  "block.ultimate_respawn.arch_tree_wood": "Arch-Tree Wood",
+  "block.ultimate_respawn.stripped_arch_tree_log": "Stripped Arch-Tree Log",
+  "block.ultimate_respawn.stripped_arch_tree_wood": "Stripped Arch-Tree Wood",
+  "block.ultimate_respawn.arch_tree_planks": "Arch-Tree Planks",
+  "block.ultimate_respawn.arch_tree_stairs": "Arch-Tree Stairs",
+  "block.ultimate_respawn.arch_tree_slab": "Arch-Tree Slab",
+  "block.ultimate_respawn.arch_tree_fence": "Arch-Tree Fence",
+  "block.ultimate_respawn.arch_tree_fence_gate": "Arch-Tree Fence Gate",
+  "block.ultimate_respawn.arch_tree_door": "Arch-Tree Door",
+  "block.ultimate_respawn.arch_tree_trapdoor": "Arch-Tree Trapdoor",
+  "block.ultimate_respawn.arch_tree_pressure_plate": "Arch-Tree Pressure Plate",
+  "block.ultimate_respawn.arch_tree_button": "Arch-Tree Button",
+  "block.ultimate_respawn.arch_tree_shelf": "Arch-Tree Shelf",
+
+  "block.ultimate_respawn.buttress_log": "Buttress Log",
+  "block.ultimate_respawn.buttress_wood": "Buttress Wood",
+  "block.ultimate_respawn.buttress_planks": "Buttress Planks",
+  "block.ultimate_respawn.buttress_stairs": "Buttress Stairs",
+  "block.ultimate_respawn.buttress_slab": "Buttress Slab",
+  "block.ultimate_respawn.buttress_fence": "Buttress Fence",
+  "block.ultimate_respawn.buttress_fence_gate": "Buttress Fence Gate",
+  "block.ultimate_respawn.buttress_door": "Buttress Door",
+  "block.ultimate_respawn.buttress_trapdoor": "Buttress Trapdoor",
+  "block.ultimate_respawn.buttress_pressure_plate": "Buttress Pressure Plate",
+  "block.ultimate_respawn.buttress_button": "Buttress Button",
+  "block.ultimate_respawn.buttress_shelf": "Buttress Shelf",
+  "block.ultimate_respawn.buttress_root": "Buttress Root",
+
+  "block.ultimate_respawn.epiphyte": "Epiphyte",
+  "block.ultimate_respawn.fairy_tablecloth": "Fairy Tablecloth",
+  "block.ultimate_respawn.ground_arum": "Ground Arum",
+
   "entity.ultimate_respawn.beetle": "Beetle",
   "entity.ultimate_respawn.borehole_ant": "Borehole Ant",
   "entity.ultimate_respawn.chthonian_knight": "Chthonian Knight",
   "entity.ultimate_respawn.orchauroch": "Orchauroch",
   "entity.ultimate_respawn.worms": "Worms",
 
+  "item.ultimate_respawn.chitin": "Chitin",
   "item.ultimate_respawn.cruor_ball": "Cruor Ball",
   "item.ultimate_respawn.orichalcum_scrap": "Orichalcum Scrap",
   "item.ultimate_respawn.orichalcum_ingot": "Orichalcum Ingot",
+  "item.ultimate_respawn.orichalcum_dredge": "Orichalcum Dredge",
   "item.ultimate_respawn.orichalcum_greatsword": "Orichalcum Greatsword",
 
   "item.ultimate_respawn.beetle_spawn_egg": "Beetle Spawn Egg",
   "item.ultimate_respawn.borehole_ant_spawn_egg": "Borehole Ant Spawn Egg",
   "item.ultimate_respawn.chthonian_knight_spawn_egg": "Chthonian Knight Spawn Egg",
   "item.ultimate_respawn.orchauroch_spawn_egg": "Orchauroch Spawn Egg",
-  "item.ultimate_respawn.worms_spawn_egg": "Worms Spawn Egg"
+  "item.ultimate_respawn.worms_spawn_egg": "Worms Spawn Egg",
+
+  "subtitles.entity.worms.death": "Worms explode",
+  "subtitles.entity.chthonian_knight.step": "Chthonian Knight warps"
 }

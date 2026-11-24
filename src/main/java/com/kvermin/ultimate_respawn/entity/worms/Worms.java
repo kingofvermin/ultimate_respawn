@@ -58,7 +58,7 @@ public class Worms extends Mob {
         super.triggerOnDeathMobEffects(level, reason);
         ((ServerLevel) this.level()).sendParticles(URParticleTypes.WORMS.get(), this.getX(), this.getY() + 0.5, this.getZ(), 50, 0.5, 0.25, 0.5, 2);
         ((ServerLevel) this.level()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, URItems.CRUOR_BALL.get()), this.getX(), this.getY() + 0.5, this.getZ(), 50, 0.75, 0.25, 0.75, 0);
-        this.level().playSound((Player) null, this.blockPosition(), URSounds.WORMS_BURST.value(), SoundSource.HOSTILE, 0.5F, 1F);
+        this.level().playSound((Player) null, this.blockPosition(), URSounds.WORMS_BURST.value(), SoundSource.HOSTILE, 0.25F, 1F);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.kvermin.ultimate_respawn.entity.beetle;
 
+import com.kvermin.ultimate_respawn.UltimateRespawn;
 import com.kvermin.ultimate_respawn.entity.util.FlyableMob;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -7,12 +8,14 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
@@ -27,12 +30,9 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.logging.Logger;
-
 import static com.kvermin.ultimate_respawn.entity.util.URMobUtilities.getBlockBelow;
 
 public class Beetle extends FlyableMob {
-    private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(Beetle.class);
     private int exhaustion;
     private int attackCooldown;
     private boolean slamAttack;
@@ -58,7 +58,7 @@ public class Beetle extends FlyableMob {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 50D).add(Attributes.ATTACK_DAMAGE, 6.0D).add(Attributes.ATTACK_KNOCKBACK, 1.0D).add(Attributes.KNOCKBACK_RESISTANCE, 0.25D).add(Attributes.MOVEMENT_SPEED, 0.23D).add(Attributes.FLYING_SPEED, 0.46D);
+        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 50D).add(Attributes.ATTACK_DAMAGE, 4.0D).add(Attributes.ATTACK_KNOCKBACK, 1.0D).add(Attributes.KNOCKBACK_RESISTANCE, 0.25D).add(Attributes.MOVEMENT_SPEED, 0.23D).add(Attributes.FLYING_SPEED, 0.46D);
     }
 
     protected void registerGoals() {
@@ -86,6 +86,7 @@ public class Beetle extends FlyableMob {
         public void start() {
             this.mob.setFlying(true);
             this.mob.setAnimationState(Beetle.TAKEOFF_ANIMATION_ID);
+            this.mob.moveRelative((float) this.mob.getAttributeValue(Attributes.FLYING_SPEED), new Vec3(0, 0.1, 0));
             this.mob.setExhaustion(0);
         }
     }
@@ -110,6 +111,9 @@ public class Beetle extends FlyableMob {
             this.mob.setAttackCooldown(80);
         }
 
+        private static final AttributeModifier SLAM_DAMAGE = new AttributeModifier(
+                Identifier.fromNamespaceAndPath(UltimateRespawn.MOD_ID, "slam_damage"),
+                4D, AttributeModifier.Operation.ADD_VALUE);
         @Override
         public void tick() {
             super.tick();
@@ -132,7 +136,9 @@ public class Beetle extends FlyableMob {
                     if (target.isBlocking()) {
                         this.mob.entityData.set(PRONE, true);
                     } else {
-                        this.mob.doHurtTarget(target);
+                        this.mob.getAttribute(Attributes.ATTACK_DAMAGE).addOrUpdateTransientModifier(SLAM_DAMAGE);
+                        this.mob.doHurtTarget((ServerLevel) this.mob.level(), target);
+                        this.mob.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(Identifier.fromNamespaceAndPath(UltimateRespawn.MOD_ID, "slam_damage"));
                     }
                     this.spawnSlamEffects();
                     this.stop();
@@ -176,11 +182,25 @@ public class Beetle extends FlyableMob {
     @Override
     public void tick() {
         super.tick();
+        if (this.level().isClientSide()) {
+            this.setupAnimationStates();
+        }
+    }
+
+    @Override
+    public void aiStep() {
+        super.aiStep();
 
         this.attackCooldown -= this.attackCooldown > 0 ? 1 : 0;
 
         if (this.isFlying()) {
             this.exhaustion++;
+            BlockPos blockBelow = getBlockBelow(this);
+            if (this.getY() - blockBelow.getY() > 1.5 && this.getTarget() == null) {
+                if (this.getDeltaMovement().y > -0.04) this.setDeltaMovement(this.getDeltaMovement().add(0D, -0.02D, 0D));
+            } else if (this.getY() - blockBelow.getY() < 1) {
+                moveControl.setWantedPosition(this.getX(), blockBelow.getY() + 1, this.getZ(), 1);
+            }
         } else {
             this.exhaustion -= this.exhaustion > 0 ? 1 : 0;
         }
@@ -188,10 +208,6 @@ public class Beetle extends FlyableMob {
             this.removeAllGoals(
                     goal -> !(goal instanceof RandomLookAroundGoal || goal instanceof LookAtPlayerGoal)
             );
-        }
-
-        if (this.level().isClientSide()) {
-            this.setupAnimationStates();
         }
     }
 
@@ -204,7 +220,6 @@ public class Beetle extends FlyableMob {
         } else if (this.tickCount - this.entityData.get(ANIMATION_START) < this.entityData.get(ANIMATION_LENGTH)) {
             switch (this.entityData.get(ANIMATION_ID)) {
                 case ATTACK_ANIMATION_ID:
-                    this.attackAnimationState.stop();
                     this.takeoffAnimationState.stop();
                     this.flyAnimationState.stop();
                     this.landAnimationState.stop();
@@ -234,7 +249,7 @@ public class Beetle extends FlyableMob {
     private void setAnimationState(int id) {
         this.entityData.set(ANIMATION_START, this.tickCount);
         if (id == ATTACK_ANIMATION_ID) {
-            this.entityData.set(ANIMATION_LENGTH, 10);
+            this.entityData.set(ANIMATION_LENGTH, 9);
             this.entityData.set(ANIMATION_ID, ATTACK_ANIMATION_ID);
         } else if (id == TAKEOFF_ANIMATION_ID) {
             this.entityData.set(ANIMATION_LENGTH, 10);
@@ -248,11 +263,11 @@ public class Beetle extends FlyableMob {
         }
     }
 
-    public boolean doHurtTarget(Entity pEntity) {
-        if (this.attackCooldown == 0 && pEntity instanceof LivingEntity && !this.isFlying()) {
+    public boolean doHurtTarget(ServerLevel level, Entity target) {
+        if (this.attackCooldown == 0 && target instanceof LivingEntity && !this.isFlying()) {
             this.attackCooldown = 20;
-            Logger.getAnonymousLogger().info(this.entityData.get(ANIMATION_LENGTH).toString());
-            return hurtAndThrowTarget((ServerLevel) this.level(), this, (LivingEntity) pEntity);
+            this.setAnimationState(ATTACK_ANIMATION_ID);
+            return hurtAndThrowTarget(level, this, (LivingEntity) target);
         }
         return false;
     }

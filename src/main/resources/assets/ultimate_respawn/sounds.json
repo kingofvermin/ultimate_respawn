@@ -4,5 +4,11 @@
       "ultimate_respawn:mob/worms/worms_burst"
     ],
     "subtitle": "subtitles.entity.worms.death"
+  },
+  "eldritch_step": {
+    "sounds": [
+      "ultimate_respawn:mob/chthonian_knight/eldritch_step"
+    ],
+    "subtitle": "subtitles.entity.chthonian_knight.step"
   }
 }

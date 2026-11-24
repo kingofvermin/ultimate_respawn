@@ -1,36 +1,19 @@
 package com.kvermin.ultimate_respawn.entity.orchauroch;
 
 import com.kvermin.ultimate_respawn.UltimateRespawn;
-import com.kvermin.ultimate_respawn.entity.borehole_ant.BoreholeWorker;
-import com.kvermin.ultimate_respawn.entity.borehole_ant.BoreholeWorkerRenderState;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
-import net.minecraft.client.model.animal.golem.IronGolemModel;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.entity.state.IronGolemRenderState;
-import net.minecraft.client.renderer.rendertype.RenderSetup;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.UvMapping;
 import net.minecraft.resources.Identifier;
-import net.neoforged.fml.earlydisplay.render.backend.VertexFormat;
-import net.neoforged.neoforge.client.NeoForgeRenderPipelines;
 import net.neoforged.neoforge.client.NeoForgeRenderTypes;
 
-import static com.mojang.renderpearl.api.pipeline.BlendFunction.OVERLAY;
-import static net.minecraft.client.renderer.RenderPipelines.LIGHTMAP;
-
 public class AppleCowRenderer extends MobRenderer<AppleCow, AppleCowRenderState, AppleCowModel<AppleCow>> {
-    private static final Identifier TEXTURE_LOCATION = Identifier.fromNamespaceAndPath(UltimateRespawn.MODID, "textures/entity/orchauroch/orchauroch.png");
+    private static final Identifier TEXTURE_LOCATION = Identifier.fromNamespaceAndPath(UltimateRespawn.MOD_ID, "textures/entity/orchauroch/orchauroch.png");
 
     public AppleCowRenderer(EntityRendererProvider.Context pContext) {
         super(pContext, new AppleCowModel<>(pContext.bakeLayer(AppleCowModel.LAYER_LOCATION), AppleCowAnimation.ORCHAUROCH_SHAKE), 1.25f);
@@ -59,14 +42,14 @@ public class AppleCowRenderer extends MobRenderer<AppleCow, AppleCowRenderState,
             super(pRenderer);
         }
         public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, AppleCowRenderState state, float yRot, float xRot) {
-            submitNodeCollector.order(0).submitModel(model, state, poseStack, NeoForgeRenderTypes.getEntityUnlitTranslucent(Identifier.fromNamespaceAndPath(UltimateRespawn.MODID, "textures/entity/orchauroch/tree.png")), lightCoords, LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1, (UvMapping)null, state.outlineColor);
+            submitNodeCollector.order(0).submitModel(model, state, poseStack, NeoForgeRenderTypes.getEntityUnlitTranslucent(Identifier.fromNamespaceAndPath(UltimateRespawn.MOD_ID, "textures/entity/orchauroch/tree.png")), lightCoords, LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1, (UvMapping)null, state.outlineColor);
         }
     }
 
     public class AppleCowGrowthLayer extends RenderLayer<AppleCowRenderState, AppleCowModel<AppleCow>> {
-        private static final Identifier GROWTH_STAGE_1_TEXTURE = Identifier.fromNamespaceAndPath(UltimateRespawn.MODID, "textures/entity/orchauroch/growth_stage_1.png");
-        private static final Identifier GROWTH_STAGE_2_TEXTURE = Identifier.fromNamespaceAndPath(UltimateRespawn.MODID, "textures/entity/orchauroch/growth_stage_2.png");
-        private static final Identifier GROWTH_STAGE_3_TEXTURE = Identifier.fromNamespaceAndPath(UltimateRespawn.MODID, "textures/entity/orchauroch/growth_stage_3.png");
+        private static final Identifier GROWTH_STAGE_1_TEXTURE = Identifier.fromNamespaceAndPath(UltimateRespawn.MOD_ID, "textures/entity/orchauroch/growth_stage_1.png");
+        private static final Identifier GROWTH_STAGE_2_TEXTURE = Identifier.fromNamespaceAndPath(UltimateRespawn.MOD_ID, "textures/entity/orchauroch/growth_stage_2.png");
+        private static final Identifier GROWTH_STAGE_3_TEXTURE = Identifier.fromNamespaceAndPath(UltimateRespawn.MOD_ID, "textures/entity/orchauroch/growth_stage_3.png");
 
         public AppleCowGrowthLayer(RenderLayerParent<AppleCowRenderState, AppleCowModel<AppleCow>> pRenderer) {
             super(pRenderer);

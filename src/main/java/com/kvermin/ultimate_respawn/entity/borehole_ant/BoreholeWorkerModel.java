@@ -4,10 +4,6 @@
 package com.kvermin.ultimate_respawn.entity.borehole_ant;
 
 import com.kvermin.ultimate_respawn.UltimateRespawn;
-import com.kvermin.ultimate_respawn.entity.beetle.BeetleAnimation;
-import com.kvermin.ultimate_respawn.entity.borehole_ant.BoreholeWorker;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.KeyframeAnimation;
 import net.minecraft.client.model.EntityModel;
@@ -17,10 +13,9 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.Items;
 
 public class BoreholeWorkerModel<T extends Entity> extends EntityModel<BoreholeWorkerRenderState> {
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(UltimateRespawn.MODID, "borehole_worker"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(UltimateRespawn.MOD_ID, "borehole_worker"), "main");
 	private final ModelPart head;
 	private final ModelPart left_mandible;
 	private final ModelPart right_mandible;

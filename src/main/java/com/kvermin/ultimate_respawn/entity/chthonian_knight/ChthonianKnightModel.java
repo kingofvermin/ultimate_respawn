@@ -2,23 +2,21 @@ package com.kvermin.ultimate_respawn.entity.chthonian_knight;
 
 import com.kvermin.ultimate_respawn.UltimateRespawn;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.KeyframeAnimation;
-import net.minecraft.client.model.AnimationUtils;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.effects.SpearAnimations;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
+import org.joml.Matrix4f;
 
 public class ChthonianKnightModel extends HumanoidModel<ChthonianKnightRenderState> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(UltimateRespawn.MODID, "chthonian_knight"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(UltimateRespawn.MOD_ID, "chthonian_knight"), "main");
     private final ModelPart body;
     private final ModelPart chest_worms;
     private final ModelPart loincloth;
@@ -34,13 +32,21 @@ public class ChthonianKnightModel extends HumanoidModel<ChthonianKnightRenderSta
     private final ModelPart left_wing;
     private final ModelPart right_wing;
 
+    private final KeyframeAnimation defaultAnimation;
     private final KeyframeAnimation readySwingAnimation;
     private final KeyframeAnimation swingAnimation;
+    private final KeyframeAnimation blockAnimation;
+    private final KeyframeAnimation riposteAnimation;
+    private final KeyframeAnimation lowerGuardAnimation;
 
     public ChthonianKnightModel(
             ModelPart root,
+            AnimationDefinition idle,
             AnimationDefinition readySwing,
-            AnimationDefinition swing
+            AnimationDefinition swing,
+            AnimationDefinition block,
+            AnimationDefinition riposte,
+            AnimationDefinition lowerGuard
     ) {
         super(root);
         this.body = root.getChild("body");
@@ -58,8 +64,12 @@ public class ChthonianKnightModel extends HumanoidModel<ChthonianKnightRenderSta
         this.left_wing = root.getChild("left_wing");
         this.right_wing = root.getChild("right_wing");
 
+        this.defaultAnimation = idle.bake(root);
         this.readySwingAnimation = readySwing.bake(root);
         this.swingAnimation = swing.bake(root);
+        this.blockAnimation = block.bake(root);
+        this.riposteAnimation = riposte.bake(root);
+        this.lowerGuardAnimation = lowerGuard.bake(root);
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -68,7 +78,7 @@ public class ChthonianKnightModel extends HumanoidModel<ChthonianKnightRenderSta
 
         PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 34).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 7.0F, 4.0F, new CubeDeformation(0.0F))
                 .texOffs(24, 34).addBox(-4.0F, 10.0F, -2.0F, 8.0F, 2.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(50, 8).addBox(-2.0F, 7.0F, 2.0F, 4.0F, 3.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -4.0F, 0.0F));
+                .texOffs(0, 64).addBox(-2.0F, 7.0F, 2.0F, 4.0F, 3.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -4.0F, 0.0F));
 
         PartDefinition chest_worms = body.addOrReplaceChild("chest_worms", CubeListBuilder.create().texOffs(32, 8).addBox(-3.0F, 4.5F, -1.5F, 6.0F, 5.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
@@ -106,10 +116,17 @@ public class ChthonianKnightModel extends HumanoidModel<ChthonianKnightRenderSta
     }
 
     @Override
-    public void translateToHand(HumanoidRenderState state, HumanoidArm arm, PoseStack poseStack) {
+    public void translateToHand(ChthonianKnightRenderState state, HumanoidArm arm, PoseStack poseStack) {
         this.root.translateAndRotate(poseStack);
-        (arm == HumanoidArm.LEFT ? this.leftArm : this.rightArm).translateAndRotate(poseStack);
+        ModelPart modelArm = arm == HumanoidArm.LEFT ? this.leftArm : this.rightArm;
+        modelArm.translateAndRotate(poseStack);
         poseStack.translate(arm == HumanoidArm.LEFT ? -0.0625F : 0.0625F, 0.25F, 0.0F);
+
+        if (state.blockAnimationState.isStarted()) {
+            poseStack.mulPose(Axis.ZP.rotationDegrees(112.5F).get(new Matrix4f()));
+            poseStack.mulPose(Axis.YP.rotationDegrees(22.5F).get(new Matrix4f()));
+            poseStack.translate(0.55F, -0.675F, 0.25F);
+        }
     }
 
     @Override
@@ -118,22 +135,29 @@ public class ChthonianKnightModel extends HumanoidModel<ChthonianKnightRenderSta
 
         float ageInTicks = state.ageInTicks;
 
+
+        if (state.isIdle) {
+            this.defaultAnimation.apply(state.defaultAnimationState, state.ageInTicks);
+        }
+
         this.readySwingAnimation.apply(state.readySwingAnimationState, state.ageInTicks);
-        this.swingAnimation.apply(state.swingAnimationState, state.ageInTicks);
         if (state.readySwingAnimationState.isStarted() && state.animationTimeElapsed > 10) {
             this.right_arm.zRot += Mth.sin(ageInTicks  * 0.5F) * Math.min(0.125F, Mth.lerp(Math.max(0, state.animationTimeElapsed - 10F) / 40F, 0.0F, 0.125F));
         }
-        if (!(state.readySwingAnimationState.isStarted() || state.swingAnimationState.isStarted())) {
-            setupIdlePose(state);
-        }
+        this.swingAnimation.apply(state.swingAnimationState, state.ageInTicks);
+
+        this.blockAnimation.apply(state.blockAnimationState, state.ageInTicks);
+        this.riposteAnimation.apply(state.riposteAnimationState, state.ageInTicks);
+        this.lowerGuardAnimation.apply(state.lowerGuardAnimationState, state.ageInTicks);
+
         float drift = Mth.sin(ageInTicks * 0.125F);
         float driftOffset = Mth.cos(ageInTicks * 0.125F);
-        this.root.y -= driftOffset;
+        this.root.y -= 1.5F + driftOffset;
         this.left_wing.xRot += 0.025F*drift + 0.025F;
         this.left_wing.zRot -= 0.0125F*drift;
         this.right_wing.zRot += 0.0125F*drift;
-        this.left_arm.xRot = -0.025F*driftOffset;
-        this.right_arm.xRot = 0.025F*driftOffset;
+        this.left_arm.xRot -= 0.025F*driftOffset;
+        this.right_arm.xRot += 0.025F*driftOffset;
         this.left_leg.xRot += 0.05F*driftOffset;
         this.left_leg.y += 0.5F*drift;
         this.right_leg.xRot -= 0.05F*driftOffset;
@@ -155,20 +179,26 @@ public class ChthonianKnightModel extends HumanoidModel<ChthonianKnightRenderSta
         }
     }
 
-    public void setupIdlePose(ChthonianKnightRenderState state) {
-        float ageInTicks = state.ageInTicks;
+    public void setupWaterResistance(ChthonianKnightRenderState state) {
+        double bodyRot = state.bodyRot * Mth.DEG_TO_RAD;
 
-        float toRadians = Mth.PI / 180F;
-        this.root.y -= 1.5F;
-        this.body.yRot = 12.5F * toRadians;
-        this.left_wing.xRot = this.right_wing.xRot = 5F * toRadians;
-        this.left_wing.zRot = -1.25F * toRadians;
-        this.right_wing.zRot = 1.25F * toRadians;
-        this.right_arm.z += 0.5F;
-        this.left_leg.xRot = 22.5F * toRadians;
-        this.left_leg.y -= 1F;
-        this.left_leg.z += -3F;
-        this.right_leg.xRot = 12.5F * toRadians;
-        this.right_leg.z += -1F;
+        double xMovement = Mth.lerp(state.partialTick, state.xMovementOld, state.xMovement);
+        double zMovement = Mth.lerp(state.partialTick, state.zMovementOld, state.zMovement);
+        double xWaterResistance = xMovement * Mth.sin(bodyRot) + zMovement * Mth.cos(bodyRot);
+        double zWaterResistance = xMovement * Mth.cos(bodyRot) - zMovement * Mth.sin(bodyRot);
+
+        float favorLeftZ = zWaterResistance > 0 ? 0.5F : 0F;
+        float favorRightZ = zWaterResistance < 0 ? 0.5F : 0F;
+
+        float quarterPi = Mth.HALF_PI / 2;
+        this.left_leg.xRot -= Mth.clamp(xWaterResistance * 1.5F, -quarterPi, quarterPi);
+        this.left_leg.zRot -= Mth.clamp(zWaterResistance * (0.5F + favorLeftZ), -quarterPi, quarterPi);
+        this.right_leg.xRot -= Mth.clamp(xWaterResistance * 1.5F, -quarterPi, Mth.HALF_PI / 2);
+        this.right_leg.zRot -= Mth.clamp(zWaterResistance * (0.5F + favorRightZ), -quarterPi, quarterPi);
+
+        this.left_wing.xRot += Mth.clamp(xWaterResistance * 2F, 0, Mth.HALF_PI);
+        this.left_wing.zRot -= Mth.clamp(zWaterResistance * favorLeftZ, -quarterPi, quarterPi);
+        this.right_wing.xRot += Mth.clamp(xWaterResistance * 2F, 0, Mth.HALF_PI);
+        this.right_wing.zRot -= Mth.clamp(zWaterResistance * favorRightZ, -quarterPi, quarterPi);
     }
 }

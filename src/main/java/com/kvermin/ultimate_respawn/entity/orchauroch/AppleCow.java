@@ -1,6 +1,7 @@
 package com.kvermin.ultimate_respawn.entity.orchauroch;
 
 import com.kvermin.ultimate_respawn.entity.beetle.Beetle;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -28,6 +29,9 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import org.jetbrains.annotations.Nullable;
 
 public class AppleCow extends Cow {
@@ -104,7 +108,6 @@ public class AppleCow extends Cow {
                     entity.setDeltaMovement(entity.getDeltaMovement().add((double)((this.random.nextFloat() - this.random.nextFloat()) * 0.1F), (double)(this.random.nextFloat() * 0.05F), (double)((this.random.nextFloat() - this.random.nextFloat()) * 0.1F)));
                 }
             }
-
         });
     }
 
@@ -156,5 +159,21 @@ public class AppleCow extends Cow {
     public void readAdditionalSaveData(ValueInput input) {
         super.readAdditionalSaveData(input);
         this.entityData.set(GROWTH_STAGE, input.getIntOr("GrowthStage", 0));
+    }
+
+    public static class GrowthStageCondition implements LootItemCondition {
+        @Override
+        public boolean test(LootContext context) {
+            Entity testEntity = context.getOptional(LootContextParams.THIS_ENTITY);
+            if (testEntity instanceof AppleCow entity) {
+                return entity.getGrowthStage() == 3;
+            }
+            return false;
+        }
+
+        @Override
+        public MapCodec<? extends LootItemCondition> codec() {
+            return null;
+        }
     }
 }

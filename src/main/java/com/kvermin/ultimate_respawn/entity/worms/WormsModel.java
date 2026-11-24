@@ -14,11 +14,9 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 
-import java.util.logging.Logger;
-
 public class WormsModel<T extends Entity> extends EntityModel<WormsRenderState> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(UltimateRespawn.MODID, "worms"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(UltimateRespawn.MOD_ID, "worms"), "main");
     private final ModelPart mass;
     private final ModelPart worms;
 

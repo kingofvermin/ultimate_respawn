@@ -6,12 +6,8 @@ package com.kvermin.ultimate_respawn.entity.orchauroch;
 
 
 import com.kvermin.ultimate_respawn.UltimateRespawn;
-import com.kvermin.ultimate_respawn.entity.beetle.BeetleAnimation;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.KeyframeAnimation;
-import net.minecraft.client.animation.definitions.CamelAnimation;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -22,7 +18,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 
 public class AppleCowModel<T extends Entity> extends EntityModel<AppleCowRenderState> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(UltimateRespawn.MODID, "orchauroch"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(UltimateRespawn.MOD_ID, "orchauroch"), "main");
     private final ModelPart head;
     private final ModelPart body;
     private final ModelPart tail;
